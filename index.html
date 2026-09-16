@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Organic Animal Print 3D Shader Background</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen WebGL 3D Background Canvas -->
+  <canvas id="gl-canvas"></canvas>
+
+  <!-- Optional Landing Page Demo Showcase Overlay -->
+  <div id="demo-overlay" class="demo-overlay">
+    <div class="demo-card">
+      <span class="demo-badge">Fondo WebGL en Tiempo Real</span>
+      <h1>Organic Animal Print</h1>
+      <p>
+        Cordones tubulares 3D de arcilla blanca que se mueven, bifurcan y fusionan de manera orgánica sobre un fondo de gradientes pastel irisados. Totalmente interactivo con el cursor.
+      </p>
+      <div class="demo-actions">
+        <button class="btn btn-primary" onclick="document.getElementById('open-export-btn').click()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          Exportar Snippet
+        </button>
+        <a href="obs.html" target="_blank" class="btn btn-obs" title="Abrir versión limpia y directa para OBS Browser Source">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+          </svg>
+          Fuente OBS
+        </a>
+        <button class="btn btn-secondary" onclick="document.getElementById('toggle-demo-btn').click()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Ver Fondo Limpio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Launcher Icon (Shown when panel is closed) -->
+  <button id="toggle-panel-btn" class="toggle-panel-btn" title="Mostrar Controles (H)" style="display: none;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e2022" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+  </button>
+
+  <!-- Glassmorphic Control Dock -->
+  <aside id="control-panel" class="control-panel">
+    <div class="panel-header">
+      <div class="panel-title">
+        <span class="status-dot"></span>
+        <span>Controles de Shader</span>
+      </div>
+      <div class="panel-actions">
+        <button id="close-panel-btn" class="icon-btn" title="Ocultar panel (H)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <!-- Shape Selector -->
+      <div class="control-group">
+        <label>Geometría & Formas</label>
+        <div class="shapes-grid">
+          <button class="shape-btn active" onclick="setShapeMode(0)" title="Tréboles y lazos trilobulados (Tecla 1)">
+            <span class="shape-icon">☘️</span>
+            <span>Tréboles 3D</span>
+          </button>
+          <button class="shape-btn" onclick="setShapeMode(1)" title="Líneas continuas de cebra y laberinto (Tecla 2)">
+            <span class="shape-icon">🦓</span>
+            <span>Cebra Flow</span>
+          </button>
+          <button class="shape-btn" onclick="setShapeMode(2)" title="Células orgánicas y arrecife de coral (Tecla 3)">
+            <span class="shape-icon">🪸</span>
+            <span>Coral / Células</span>
+          </button>
+          <button class="shape-btn" onclick="setShapeMode(3)" title="Ondas y cintas líquidas serpenteantes (Tecla 4)">
+            <span class="shape-icon">🌊</span>
+            <span>Ondas Seda</span>
+          </button>
+          <button class="shape-btn" onclick="setShapeMode(4)" title="Gotas y perlas bio que se fusionan (Tecla 5)">
+            <span class="shape-icon">🫧</span>
+            <span>Gotas Bio</span>
+          </button>
+          <button class="shape-btn" onclick="setShapeMode(5)" title="Corazones 3D que laten y se fusionan (Tecla 6)">
+            <span class="shape-icon">❤️</span>
+            <span>Corazones</span>
+          </button>
+          <button class="shape-btn" onclick="setShapeMode(6)" title="Huesos de perro 3D que giran y se juntan (Tecla 7)">
+            <span class="shape-icon">🦴</span>
+            <span>Huesitos</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Presets Selector -->
+      <div class="control-group">
+        <label>Paletas & Estilos</label>
+        <div class="presets-grid">
+          <button class="preset-btn active" onclick="applyPreset(0)">
+            <span class="preset-color-dot" style="background: linear-gradient(135deg, #fbcfe8, #a7f3d0, #bae6fd);"></span>
+            <span>Pastel Clay</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset(1)">
+            <span class="preset-color-dot" style="background: linear-gradient(135deg, #ffffff, #1f2937);"></span>
+            <span>Zebra Minimal</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset(2)">
+            <span class="preset-color-dot" style="background: linear-gradient(135deg, #f472b6, #38bdf8);"></span>
+            <span>Cotton Candy</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset(3)">
+            <span class="preset-color-dot" style="background: linear-gradient(135deg, #fb923c, #2dd4bf);"></span>
+            <span>Coral Reef</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset(4)">
+            <span class="preset-color-dot" style="background: linear-gradient(135deg, #06b6d4, #d946ef);"></span>
+            <span>Cyber Neon</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset(5)">
+            <span class="preset-color-dot" style="background: linear-gradient(135deg, #fde047, #f43f5e);"></span>
+            <span>Golden Pearl</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sliders -->
+      <div class="control-group">
+        <label>Parámetros de Animación & 3D</label>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Velocidad de Cordones</span>
+            <span id="val-speed" class="slider-val">0.80</span>
+          </div>
+          <input id="slider-speed" type="range" min="0.1" max="2.5" step="0.05" value="0.8">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Velocidad de Fondo (Remolino)</span>
+            <span id="val-bgSpeed" class="slider-val">1.00</span>
+          </div>
+          <input id="slider-bgSpeed" type="range" min="0.0" max="3.0" step="0.05" value="1.0">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Densidad / Escala (Concurrido)</span>
+            <span id="val-scale" class="slider-val">44.00</span>
+          </div>
+          <input id="slider-scale" type="range" min="15.0" max="90.0" step="1.0" value="44.0">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Grosor de Cordones (Prolijo)</span>
+            <span id="val-thickness" class="slider-val">0.52</span>
+          </div>
+          <input id="slider-thickness" type="range" min="0.20" max="0.85" step="0.01" value="0.52">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Relieve 3D (Profundidad)</span>
+            <span id="val-depth" class="slider-val">1.60</span>
+          </div>
+          <input id="slider-depth" type="range" min="0.5" max="3.5" step="0.1" value="1.6">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Fuerza de Interacción (Cursor)</span>
+            <span id="val-mouseForce" class="slider-val">0.65</span>
+          </div>
+          <input id="slider-mouseForce" type="range" min="0.0" max="1.5" step="0.05" value="0.65">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Brillo Satinado / Especular</span>
+            <span id="val-specular" class="slider-val">0.85</span>
+          </div>
+          <input id="slider-specular" type="range" min="0.1" max="2.0" step="0.05" value="0.85">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Sombras Arrojadas</span>
+            <span id="val-shadows" class="slider-val">0.75</span>
+          </div>
+          <input id="slider-shadows" type="range" min="0.0" max="1.0" step="0.05" value="0.75">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>Saturación del Fondo</span>
+            <span id="val-saturation" class="slider-val">1.00</span>
+          </div>
+          <input id="slider-saturation" type="range" min="0.0" max="2.0" step="0.05" value="1.0">
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Quick Floating Action Dock (Bottom Center) -->
+  <nav class="quick-dock">
+    <button id="toggle-demo-btn" class="dock-btn active" title="Alternar Tarjeta de Demostración (Espacio)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="3" y1="9" x2="21" y2="9"></line>
+        <line x1="9" y1="21" x2="9" y2="9"></line>
+      </svg>
+      <span>Landing Demo</span>
+    </button>
+
+    <button id="open-export-btn" class="dock-btn" title="Copiar código para tu web">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 18 22 12 16 6"></polyline>
+        <polyline points="8 6 2 12 8 18"></polyline>
+      </svg>
+      <span>Exportar Código</span>
+    </button>
+
+    <a href="obs.html" target="_blank" class="dock-btn" title="Abrir versión directa para OBS Studio">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+      </svg>
+      <span>OBS</span>
+    </a>
+
+    <button id="fullscreen-btn" class="dock-btn" title="Pantalla Completa (F)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+      </svg>
+      <span>Fullscreen</span>
+    </button>
+  </nav>
+
+  <!-- Export Code Modal -->
+  <div id="export-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Exportar Shader & Fuente OBS</h3>
+        <button id="close-export-btn" class="icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-tabs">
+        <button class="tab-btn active" data-tab="html" onclick="setExportTab('html')">HTML Directo</button>
+        <button class="tab-btn" data-tab="obs" onclick="setExportTab('obs')">OBS Studio</button>
+        <button class="tab-btn" data-tab="threejs" onclick="setExportTab('threejs')">Three.js</button>
+        <button class="tab-btn" data-tab="glsl" onclick="setExportTab('glsl')">GLSL Shaders</button>
+      </div>
+      <div class="modal-body">
+        <div class="code-container">
+          <button id="copy-code-btn" class="copy-btn">Copiar</button>
+          <pre><code id="export-code"></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">¡Código copiado!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
